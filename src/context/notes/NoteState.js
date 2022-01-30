@@ -28,26 +28,19 @@ const NoteState = (props) => {
 
     // add a note
     const addNote = async (title, description, tag) => {
-        console.log('Adding a new note')
-        // TODO: API call
-        const response = await fetch(`${host}/api/note/create`, {
+        // API Call
+        await fetch(`${host}/api/note/create`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'auth-token': 'eyJhbGciOiJIUzI1NiJ9.NjFmNGRlYTNiMDk2ZmE4MTVjMjdkNjY0.jcneSj3GpVSxGu4frUwk9vPttLQvh7KU4YtZkshL0GQ'
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({title, description, tag})
+            body: JSON.stringify({title: title[0], description: description[0], tag: tag[0], token})
         });
 
         const note = {
-            "_id": "61f4f4c8ca835e92b9513217",
-            "user": "61f4dea3b096fa815c27d664",
             "title": title,
             "description": description,
             "tag": tag,
-            "createdAt": "2022-01-29T08:03:20.116Z",
-            "updatedAt": "2022-01-29T10:51:26.638Z",
-            "__v": 0
         };
         setNotes(notes.concat(note));
     }
@@ -59,7 +52,6 @@ const NoteState = (props) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
-                // 'auth-token': 'eyJhbGciOiJIUzI1NiJ9.NjFmNGRlYTNiMDk2ZmE4MTVjMjdkNjY0.jcneSj3GpVSxGu4frUwk9vPttLQvh7KU4YtZkshL0GQ'
             },
             body: JSON.stringify({token})
         });
@@ -73,8 +65,8 @@ const NoteState = (props) => {
 
     // update a note
     const editNote = async (id, title, description, tag) => {
-        // TODO: API call
-        const response = await fetch(`${host}/api/note/update/${id}`, {
+        //API call
+        await fetch(`${host}/api/note/update/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -82,7 +74,6 @@ const NoteState = (props) => {
             },
             body: JSON.stringify({title, description, tag})
         });
-        const json =  response.json();
 
         // logic to edit in client
         for (let index = 0; index < notes.length; index++) {
