@@ -19,30 +19,25 @@ const NoteState = (props) => {
             headers: {
                 'Content-Type': 'application/json',
                 'auth-token': 'eyJhbGciOiJIUzI1NiJ9.NjFmNGRlYTNiMDk2ZmE4MTVjMjdkNjY0.jcneSj3GpVSxGu4frUwk9vPttLQvh7KU4YtZkshL0GQ'
-            }            
+            }
         });
         const json = await response.json();
-        console.log(json);
         setNotes(json);
     }
 
     // add a note
     const addNote = async (title, description, tag) => {
         // API Call
-        await fetch(`${host}/api/note/create`, {
+        const response = await fetch(`${host}/api/note/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({title: title[0], description: description[0], tag: tag[0], token})
+            body: JSON.stringify({ title: title[0], description: description[0], tag: tag[0], token })
         });
 
-        const note = {
-            "title": title,
-            "description": description,
-            "tag": tag,
-        };
-        setNotes(notes.concat(note));
+        const note = await response.json();
+        setNotes(notes.concat(note.data));
     }
 
     // delete a note
@@ -53,12 +48,9 @@ const NoteState = (props) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({token})
+            body: JSON.stringify({ token })
         });
-        const json =  response.json();
-        console.log(json);
-
-        console.log('Deleting the node with the id: ', id)
+        const json = response.json();
         const newNotes = notes.filter((note) => { return note._id !== id })
         setNotes(newNotes);
     }
@@ -67,23 +59,25 @@ const NoteState = (props) => {
     const editNote = async (id, title, description, tag) => {
         //API call
         await fetch(`${host}/api/note/update/${id}`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                'auth-token': 'eyJhbGciOiJIUzI1NiJ9.NjFmNGRlYTNiMDk2ZmE4MTVjMjdkNjY0.jcneSj3GpVSxGu4frUwk9vPttLQvh7KU4YtZkshL0GQ'
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({title, description, tag})
+            body: JSON.stringify({ title: title[0], description: description[0], tag: tag[0], token })
         });
 
         // logic to edit in client
-        for (let index = 0; index < notes.length; index++) {
-            const element = notes[index];
-            if(element._id === id){
-                element.title = title;
-                element.description = description;
-                element.tag = tag;
+        let newNote = JSON.parse(JSON.stringify(notes));
+        for (let index = 0; index < newNote.length; index++) {
+            const element = newNote[index];
+            if (element._id === id) {
+                newNote[index].title = title;
+                newNote[index].description = description;
+                newNote[index].tag = tag;
+                break;
             }
         }
+        setNotes(newNote);
     }
 
     return (
