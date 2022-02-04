@@ -20,19 +20,19 @@ export const Login = (props) => {
             body: JSON.stringify({email: credentials.email[0], password: credentials.password[0]})
         });
         const json = await response.json();
-        console.log(json);
         if(json.success){
             // save the auth token and redirect
             localStorage.setItem('token', json.data.token);
-            history.push('/');
             props.showAlert('Logged in Successfully', 'success');
+            history.push('/');
         }else{
             props.showAlert('Invalid Details', 'danger');
         }
     }
 
     return (
-        <div>
+        <div className=" container mt-3">
+            <h2>Login to continue to iNotebook</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Username</label>

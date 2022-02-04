@@ -5,8 +5,6 @@ const NoteState = (props) => {
 
     const host = 'http://localhost:8000'
 
-    const token = 'eyJhbGciOiJIUzI1NiJ9.NjFmNGRlYTNiMDk2ZmE4MTVjMjdkNjY0.jcneSj3GpVSxGu4frUwk9vPttLQvh7KU4YtZkshL0GQ';
-
     const notesInitial = [];
 
     const [notes, setNotes] = useState(notesInitial);
@@ -18,7 +16,7 @@ const NoteState = (props) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'auth-token': 'eyJhbGciOiJIUzI1NiJ9.NjFmNGRlYTNiMDk2ZmE4MTVjMjdkNjY0.jcneSj3GpVSxGu4frUwk9vPttLQvh7KU4YtZkshL0GQ'
+                'auth-token': localStorage.getItem('token')
             }
         });
         const json = await response.json();
@@ -31,9 +29,10 @@ const NoteState = (props) => {
         const response = await fetch(`${host}/api/note/create`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('token')
             },
-            body: JSON.stringify({ title: title[0], description: description[0], tag: tag[0], token })
+            body: JSON.stringify({ title: title[0], description: description[0], tag: tag[0]})
         });
 
         const note = await response.json();
@@ -43,14 +42,13 @@ const NoteState = (props) => {
     // delete a note
     const deleteNote = async (id) => {
         // API call
-        const response = await fetch(`${host}/api/note/delete/${id}`, {
+        await fetch(`${host}/api/note/delete/${id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ token })
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('token')
+            }
         });
-        const json = response.json();
         const newNotes = notes.filter((note) => { return note._id !== id })
         setNotes(newNotes);
     }
@@ -61,9 +59,10 @@ const NoteState = (props) => {
         await fetch(`${host}/api/note/update/${id}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'auth-token': localStorage.getItem('token')
             },
-            body: JSON.stringify({ title: title[0], description: description[0], tag: tag[0], token })
+            body: JSON.stringify({ title: title[0], description: description[0], tag: tag[0]})
         });
 
         // logic to edit in client

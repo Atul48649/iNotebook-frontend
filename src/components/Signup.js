@@ -21,7 +21,6 @@ export const Signup = (props) => {
             body: JSON.stringify({ name: credentials.name[0], email: credentials.email[0], password: credentials.password[0] })
         });
         const json = await response.json();
-        console.log(json);
         if (json.success) {
             // save the auth token and redirect
             localStorage.setItem('token', json.data.token);
@@ -34,7 +33,8 @@ export const Signup = (props) => {
     }
 
     return (
-        <div>
+        <div className="container mt-3">
+            <h2>Create an account to use iNotebook</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>
